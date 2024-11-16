@@ -1,7 +1,7 @@
 const express = require('express');
-const router = express.Router();
-const { getUsers, createUser, userLogin } = require('../controllers/userControllers');
 
+const { getUsers, createUser, userLogin } = require('../controllers/userControllers');
+const router = express.Router();
 // @route GET /api/users
 router.get('/', getUsers);
 

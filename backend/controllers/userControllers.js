@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/Users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -6,35 +6,37 @@ const jwt = require('jsonwebtoken');
 // @route GET /api/users
 const getUsers = async (req, res) => {
 	try {
-		const users = await User.find().select('-password -__v'); // Exclude password and Mongoose version key
+		const users = await User.find().select('-password -__v'); // Exclude sensitive data
+		if (!users || users.length === 0) {
+			return res.status(404).json({ message: 'No users found' });
+		}
 		res.json(users);
 	} catch (err) {
 		console.error('Error fetching users:', err);
 		res.status(500).json({ message: 'Server error' });
 	}
 };
+
 const userLogin = async (req, res) => {
-	const { email, password } = req.body; // Destructure email and password from request body
+	const { email, password } = req.body;
+
+	if (!email || !password) {
+		return res.status(400).json({ message: 'Email and password are required' });
+	}
 
 	try {
-		// Find user by email
 		const user = await User.findOne({ email });
 		if (!user) {
-			return res.status(404).json({ message: 'User not found' });
+			return res.status(401).json({ message: 'Invalid credentials' }); // Generic error for security
 		}
 
-		// Check if password is correct
 		const isMatch = await bcrypt.compare(password, user.password);
 		if (!isMatch) {
 			return res.status(401).json({ message: 'Invalid credentials' });
 		}
 
-		// Generate JWT
-		const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-			expiresIn: '1d', // Token validity
-		});
+		const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-		// Update last login
 		user.lastLogin = new Date();
 		await user.save();
 
@@ -48,11 +50,12 @@ const userLogin = async (req, res) => {
 				lastLogin: user.lastLogin,
 			},
 		});
-	} catch (error) {
-		console.error('Error during login:', error);
+	} catch (err) {
+		console.error('Error during login:', err);
 		res.status(500).json({ message: 'Server error' });
 	}
 };
+
 
 
 // @desc Create a new user
@@ -60,16 +63,19 @@ const userLogin = async (req, res) => {
 const createUser = async (req, res) => {
 	const { name, email, password } = req.body;
 
-	try {
-		// Check if email already exists
-		const existingUser = await User.findOne({ email });
-		if (existingUser) return res.status(400).json({ message: 'Email already in use' });
+	if (!name || !email || !password) {
+		return res.status(400).json({ message: 'Name, email, and password are required' });
+	}
 
-		// Hash the password
+	try {
+		const existingUser = await User.findOne({ email });
+		if (existingUser) {
+			return res.status(400).json({ message: 'Email already in use' });
+		}
+
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(password, salt);
 
-		// Create the new user
 		const newUser = new User({ name, email, password: hashedPassword });
 		await newUser.save();
 
@@ -80,4 +86,5 @@ const createUser = async (req, res) => {
 	}
 };
 
-module.exports = { getUsers, createUser };
+
+module.exports = { getUsers, createUser, userLogin };
