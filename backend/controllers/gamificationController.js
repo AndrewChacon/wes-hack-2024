@@ -1,4 +1,4 @@
-const Activity = require('../models/Activities');
+const Activity = require('../models/activities');
 const User = require('../models/Users');
 
 // Add a new task to a user
