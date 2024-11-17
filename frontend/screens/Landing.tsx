@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
 		width: 100,
 		height: 100,
 		marginBottom: 20,
+		marginTop: 50,
 		borderRadius: 50,
 	},
 	header: {
