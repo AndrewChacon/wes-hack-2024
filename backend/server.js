@@ -9,14 +9,14 @@ const userRoutes = require('./routes/userRoutes'); // User routes
 
 // Load environment variables
 dotenv.config();
-
+connectDB();
 // Validate required environment variables
 if (!process.env.MONGO_URI) {
     throw new Error('MONGO_URI is not defined in .env');
 }
 
 // Connect to the database
-connectDB();
+
 
 // Initialize Express app
 const app = express();
@@ -39,8 +39,11 @@ app.use((req, res) => {
 
 // Global Error Handler
 app.use((err, req, res, next) => {
-    console.error(`Error: ${err.message}`);
-    res.status(err.status || 500).json({ message: err.message || 'Server Error' });
+    console.error('Global error handler caught:', err);
+    res.status(err.status || 500).json({
+        message: err.message || 'Server Error',
+        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
 });
 
 // Start server

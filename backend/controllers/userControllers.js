@@ -61,7 +61,8 @@ const userLogin = async (req, res) => {
 };
 
 // @desc Create a new user
-// @route POST /api/users
+
+
 const createUser = async (req, res) => {
 	const { name, email, password } = req.body;
 
@@ -70,6 +71,7 @@ const createUser = async (req, res) => {
 		return res
 			.status(400)
 			.json({ message: 'Name, email, and password are required' });
+
 	}
 
 	try {
@@ -83,8 +85,10 @@ const createUser = async (req, res) => {
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(password, salt);
 
+
 		// Create a new user
 		const newUser = new User({ name, email, password: hashedPassword });
+
 		await newUser.save();
 
 		// Respond with success
@@ -94,7 +98,11 @@ const createUser = async (req, res) => {
 		});
 	} catch (err) {
 		console.error('Error creating user:', err);
-		res.status(500).json({ message: 'Server error' });
+		res.status(500).json({
+			message: 'Server error',
+			error: err.message,
+			stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+		});
 	}
 };
 
