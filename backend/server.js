@@ -5,7 +5,6 @@ const cors = require('cors'); // Enable CORS
 const helmet = require('helmet'); // Secure HTTP headers
 const morgan = require('morgan'); // Logging
 const gamificationRoutes = require('./routes/gamificationRoutes'); // Gamification routes
-//controllers user and user??
 const User = require('./models/Users');
 const { getUsers, createUser } = require('./controllers/userControllers');
 const userRoutes = require('./routes/userRoutes'); // User routes
