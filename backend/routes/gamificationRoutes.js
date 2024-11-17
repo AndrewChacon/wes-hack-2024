@@ -1,6 +1,6 @@
 const express = require('express');
 const { awardPoints, updateStreak, addTask, completeTask } = require('../controllers/gamificationController');
-const protect = require('../middleware/authMiddleware'); // For authentication
+const { protect } = require('../middleware/authMiddleware'); // Destructure the protect function
 const validatePoints = require('../middleware/validatePoints'); // For points validation
 
 const router = express.Router();

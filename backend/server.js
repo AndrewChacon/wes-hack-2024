@@ -5,7 +5,11 @@ const cors = require('cors'); // Enable CORS
 const helmet = require('helmet'); // Secure HTTP headers
 const morgan = require('morgan'); // Logging
 const gamificationRoutes = require('./routes/gamificationRoutes'); // Gamification routes
+//controllers user and user??
+const User = require('./models/Users');
+const { getUsers, createUser } = require('./controllers/userControllers');
 const userRoutes = require('./routes/userRoutes'); // User routes
+const metricsRoutes = require('./routes/metricsRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -30,6 +34,7 @@ app.use(morgan('dev')); // Log HTTP requests
 // Routes
 app.use('/api/users', userRoutes); // Mount user routes
 app.use('/api/gamification', gamificationRoutes); // Mount gamification routes
+app.use('/api/metrics', require('./routes/metricsRoutes'))
 
 // 404 Handler for unmatched routes
 app.use((req, res) => {
