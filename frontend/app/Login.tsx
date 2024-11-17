@@ -36,10 +36,13 @@ export default function Login() {
 		}
 
 		try {
-			const response = await axios.post('http:5000/login', {
-				email,
-				password,
-			});
+			const response = await axios.post(
+				'http://localhost:5000/api/users/login',
+				{
+					email,
+					password,
+				}
+			);
 			// Assuming response contains a JWT token and user info
 			const { token, user } = response.data;
 			// Store token in AsyncStorage (or handle it as per your need)
