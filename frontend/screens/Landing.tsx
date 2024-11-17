@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-import MainImage from '@/assets/images/doctor.jpg'; // Replace with your image path
+import MainImage from '@/assets/images/doctor.jpg';
 
 export default function App() {
 	const [weight, setWeight] = useState('');
@@ -54,7 +54,6 @@ export default function App() {
 							Track and achieve your health goals with ease
 						</Text>
 
-						{/* Input fields */}
 						<TextInput
 							style={styles.input}
 							placeholder='Enter your weight (lbs)'
@@ -82,7 +81,6 @@ export default function App() {
 							onChangeText={setAge}
 						/>
 
-						{/* Exercise Hours per Week Input */}
 						<TextInput
 							style={styles.input}
 							placeholder='Enter exercise hours per week'
@@ -92,7 +90,6 @@ export default function App() {
 							onChangeText={setExerciseHours}
 						/>
 
-						{/* Dropdown for activity level */}
 						<DropDownPicker
 							open={open}
 							value={activityLevel}
@@ -109,7 +106,6 @@ export default function App() {
 							]}
 						/>
 
-						{/* Dietary Restrictions box */}
 						<View style={styles.dietaryRestrictionsBox}>
 							<Text style={styles.dietaryRestrictionsHeader}>
 								Dietary Restrictions
@@ -127,7 +123,6 @@ export default function App() {
 							/>
 						</View>
 
-						{/* Health Conditions Box */}
 						<View style={styles.healthConditionsBox}>
 							<Text style={styles.healthConditionsHeader}>
 								Health Conditions
@@ -145,14 +140,12 @@ export default function App() {
 							/>
 						</View>
 
-						{/* Submit Button */}
 						<View style={styles.buttonContainer}>
 							<TouchableOpacity style={styles.button}>
 								<Text style={styles.buttonText}>Submit</Text>
 							</TouchableOpacity>
 						</View>
 
-						{/* Extra padding below submit button */}
 						<View style={styles.extraPadding}></View>
 					</ScrollView>
 				</View>

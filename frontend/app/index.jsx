@@ -12,15 +12,14 @@ import {
 	KeyboardAvoidingView,
 	Platform,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Import navigation
 import { useRouter } from 'expo-router';
+import axios from 'axios';
 
 const App = () => {
 	const router = useRouter();
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const navigation = useNavigation(); // Initialize navigation
 
 	const dismissKeyboard = () => {
 		Keyboard.dismiss();
@@ -29,6 +28,37 @@ const App = () => {
 	// Function to navigate to login screen
 	const goToLogin = () => {
 		router.push('/Login');
+	};
+
+	const SubmitSignUp = async () => {
+		if (!name || !email || !password) {
+			setErrorMessage('All fields are required');
+			return;
+		}
+
+		try {
+			const response = await axios.post(
+				'http://localhost:5000/api/users',
+				{
+					name,
+					email,
+					password,
+				}
+			);
+
+			// If the user is successfully created
+			console.log(response.data);
+			alert('User created successfully!');
+			router.push('/userinput');
+		} catch (error) {
+			console.error(
+				'Error during sign up:',
+				error.response?.data || error.message
+			);
+			setErrorMessage(
+				error.response?.data?.message || 'Something went wrong'
+			);
+		}
 	};
 
 	return (
@@ -80,7 +110,7 @@ const App = () => {
 						<View style={styles.buttonContainer}>
 							<TouchableOpacity
 								style={styles.button}
-								onPress={() => router.push('/userinput')}>
+								onPress={SubmitSignUp}>
 								<Text style={styles.buttonText}>Submit</Text>
 							</TouchableOpacity>
 						</View>
