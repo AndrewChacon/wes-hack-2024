@@ -1,4 +1,5 @@
 const User = require('../models/Users');
+const UserStats = require('../models/UserStats');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -62,7 +63,6 @@ const userLogin = async (req, res) => {
 
 // @desc Create a new user
 
-
 const createUser = async (req, res) => {
 	const { name, email, password } = req.body;
 
@@ -71,7 +71,6 @@ const createUser = async (req, res) => {
 		return res
 			.status(400)
 			.json({ message: 'Name, email, and password are required' });
-
 	}
 
 	try {
@@ -84,7 +83,6 @@ const createUser = async (req, res) => {
 		// Hash the password
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(password, salt);
-
 
 		// Create a new user
 		const newUser = new User({ name, email, password: hashedPassword });
@@ -101,9 +99,52 @@ const createUser = async (req, res) => {
 		res.status(500).json({
 			message: 'Server error',
 			error: err.message,
-			stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+			stack:
+				process.env.NODE_ENV === 'development' ? err.stack : undefined,
 		});
 	}
 };
 
-module.exports = { getUsers, createUser, userLogin };
+const createUserStats = async (req, res) => {
+	const {
+		weight,
+		height,
+		age,
+		dietaryRestrictions,
+		healthConditions,
+		exerciseHours,
+		activityLevel,
+	} = req.body;
+
+	// Validate required fields
+	if (!weight || !height || !age || !activityLevel) {
+		return res.status(400).json({
+			message: 'Weight, height, age, and activity level are required.',
+		});
+	}
+
+	try {
+		// Create a new stats entry
+		const newStats = new UserStats({
+			weight,
+			height,
+			age,
+			dietaryRestrictions: dietaryRestrictions || [], // Default to empty array
+			healthConditions: healthConditions || [], // Default to empty array
+			exerciseHours: exerciseHours || 0, // Default to 0
+			activityLevel,
+		});
+
+		await newStats.save();
+
+		res.status(201).json({
+			message: 'User stats created successfully',
+			stats: newStats,
+		});
+	} catch (err) {
+		console.error('Error creating user stats:', err.message);
+		res.status(500).json({ message: 'Server error', error: err.message });
+	}
+};
+
+module.exports = { getUsers, createUser, userLogin, createUserStats };

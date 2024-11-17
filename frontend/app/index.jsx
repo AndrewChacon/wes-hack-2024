@@ -37,24 +37,21 @@ const App = () => {
 		}
 
 		try {
-			const response = await axios.post('http://localhost:5000/', {
-				name,
-				email,
-				password,
-			});
+			const response = await axios.post(
+				'http://localhost:5000/api/users',
+				{
+					name,
+					email,
+					password,
+				}
+			);
 
 			// If the user is successfully created
 			console.log(response.data);
 			alert('User created successfully!');
 			router.push('/userinput');
 		} catch (error) {
-			console.error(
-				'Error during sign up:',
-				error.response?.data || error.message
-			);
-			setErrorMessage(
-				error.response?.data?.message || 'Something went wrong'
-			);
+			console.log(error);
 		}
 	};
 

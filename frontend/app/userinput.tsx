@@ -22,9 +22,9 @@ export default function UserIn() {
 	const [weight, setWeight] = useState('');
 	const [height, setHeight] = useState('');
 	const [age, setAge] = useState('');
-	const [dietaryRestrictions, setDietaryRestrictions] = useState(''); // Placeholder for dietary restrictions
-	const [healthConditions, setHealthConditions] = useState(''); // Placeholder for health conditions
-	const [exerciseHours, setExerciseHours] = useState(''); // New input for exercise hours
+	const [dietaryRestrictions, setDietaryRestrictions] = useState('');
+	const [healthConditions, setHealthConditions] = useState('');
+	const [exerciseHours, setExerciseHours] = useState('');
 	const [activityLevel, setActivityLevel] = useState(null);
 	const [open, setOpen] = useState(false);
 	const [items, setItems] = useState([
@@ -37,6 +37,44 @@ export default function UserIn() {
 
 	const dismissKeyboard = () => {
 		Keyboard.dismiss();
+	};
+
+	const handleSubmit = async () => {
+		// Create the data object to send
+		const data = {
+			weight,
+			height,
+			age,
+			dietaryRestrictions,
+			healthConditions,
+			exerciseHours,
+			activityLevel,
+		};
+
+		// API endpoint (replace with your actual endpoint)
+		const apiUrl = 'http://localhost:5000/api/users/userstats';
+
+		try {
+			const response = await fetch(apiUrl, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data),
+			});
+
+			const result = await response.json();
+			if (response.ok) {
+				alert('Data submitted successfully!');
+				console.log('Response:', result);
+			} else {
+				alert('Submission failed. Please try again.');
+				console.error('Error:', result);
+			}
+		} catch (error) {
+			alert('An error occurred. Please try again.');
+			console.error('Error:', error);
+		}
 	};
 
 	return (
@@ -149,7 +187,9 @@ export default function UserIn() {
 
 						{/* Submit Button */}
 						<View style={styles.buttonContainer}>
-							<TouchableOpacity style={styles.button}>
+							<TouchableOpacity
+								style={styles.button}
+								onPress={handleSubmit}>
 								<Text style={styles.buttonText}>Submit</Text>
 							</TouchableOpacity>
 						</View>
@@ -267,30 +307,27 @@ const styles = StyleSheet.create({
 		textAlignVertical: 'top',
 	},
 	buttonContainer: {
-		width: '100%',
-		alignItems: 'center',
-		marginBottom: 20, // Add space directly below the button
+		marginTop: 20,
+		width: '90%',
 	},
 	button: {
-		width: '90%',
-		backgroundColor: '#27ae60',
-		padding: 15,
+		backgroundColor: '#2c3e50',
+		paddingVertical: 15,
 		borderRadius: 8,
 		alignItems: 'center',
-		marginTop: 20,
+		justifyContent: 'center',
 		shadowColor: '#000',
-		shadowOffset: { width: 0, height: 4 },
-		shadowOpacity: 0.2,
-		shadowRadius: 6,
-		elevation: 4,
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.1,
+		shadowRadius: 5,
+		elevation: 2,
 	},
 	buttonText: {
 		color: '#fff',
 		fontSize: 18,
 		fontWeight: 'bold',
 	},
-	// Extra padding below the submit button
 	extraPadding: {
-		height: 100, // Adjust height as needed
+		height: 100,
 	},
 });
