@@ -37,14 +37,11 @@ const App = () => {
 		}
 
 		try {
-			const response = await axios.post(
-				'http://localhost:5000/api/users',
-				{
-					name,
-					email,
-					password,
-				}
-			);
+			const response = await axios.post('http://localhost:5000/', {
+				name,
+				email,
+				password,
+			});
 
 			// If the user is successfully created
 			console.log(response.data);

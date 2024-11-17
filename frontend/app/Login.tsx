@@ -12,14 +12,14 @@ import {
 	KeyboardAvoidingView,
 	Platform,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Import navigation
 import { useRouter } from 'expo-router';
+import axios from 'axios';
 
 export default function Login() {
 	const router = useRouter();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const navigation = useNavigation(); // Initialize navigation
+	const [error, setError] = useState(null);
 
 	const dismissKeyboard = () => {
 		Keyboard.dismiss();
@@ -28,6 +28,27 @@ export default function Login() {
 	// Function to navigate to signup screen
 	const goToSignUp = () => {
 		router.push('/');
+	};
+
+	const handleLogin = async () => {
+		if (!email || !password) {
+			return;
+		}
+
+		try {
+			const response = await axios.post('http:5000/login', {
+				email,
+				password,
+			});
+			// Assuming response contains a JWT token and user info
+			const { token, user } = response.data;
+			// Store token in AsyncStorage (or handle it as per your need)
+			// Redirect to user input page or home screen
+			console.log('Login Successful:', user);
+			router.push('/userinput');
+		} catch (err) {
+			console.error('Error logging in:', err);
+		}
 	};
 
 	return (
@@ -47,6 +68,8 @@ export default function Login() {
 						<Text style={styles.subheader}>
 							Enter your credentials to log in
 						</Text>
+
+						{error && <Text style={styles.errorText}>{error}</Text>}
 
 						{/* Input fields */}
 						<TextInput
@@ -71,7 +94,7 @@ export default function Login() {
 						<View style={styles.buttonContainer}>
 							<TouchableOpacity
 								style={styles.button}
-								onPress={() => router.push('/userinput')}>
+								onPress={handleLogin}>
 								<Text style={styles.buttonText}>Login</Text>
 							</TouchableOpacity>
 						</View>
@@ -175,6 +198,12 @@ const styles = StyleSheet.create({
 		color: '#fff',
 		fontSize: 18,
 		fontWeight: 'bold',
+	},
+	errorText: {
+		color: '#e74c3c',
+		fontSize: 16,
+		textAlign: 'center',
+		marginBottom: 20,
 	},
 	// Extra padding below the submit button
 	extraPadding: {
