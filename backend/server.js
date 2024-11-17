@@ -5,10 +5,7 @@ const cors = require('cors'); // Enable CORS
 const helmet = require('helmet'); // Secure HTTP headers
 const morgan = require('morgan'); // Logging
 const gamificationRoutes = require('./routes/gamificationRoutes'); // Gamification routes
-const User = require('./models/Users');
-const { getUsers, createUser } = require('./controllers/userControllers');
 const userRoutes = require('./routes/userRoutes'); // User routes
-const metricsRoutes = require('./routes/metricsRoutes');
 
 // Load environment variables
 dotenv.config();
