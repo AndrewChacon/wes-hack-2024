@@ -60,11 +60,17 @@ const userLogin = async (req, res) => {
 
 // @desc Create a new user
 // @route POST /api/users
-const createUser = async (req, res) => {
-	const { name, email, password, age, height, weight, conditions, healthGoals } = req.body;
 
-	if (!name || !email || !password) {
-		return res.status(400).json({ message: 'Name, email, and password are required' });
+const createUser = async (req, res) => {
+	console.log('Received request body:', req.body);
+	const {
+		name, email, password, age, height, weight,
+		exercise_hours, Activity_level, restrictions
+	} = req.body;
+
+	if (!name || !email || !password || !age || !height || !weight ||
+		!exercise_hours || !Activity_level || !restrictions) {
+		return res.status(400).json({ message: 'All fields are required' });
 	}
 
 	try {
@@ -76,13 +82,29 @@ const createUser = async (req, res) => {
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(password, salt);
 
-		const newUser = new User({ name, email, password: hashedPassword, age, height, weight, conditions, healthGoals });
+		const newUser = new User({
+			name,
+			email,
+			password: hashedPassword,
+			age,
+			height,
+			weight,
+			exercise_hours,
+			Activity_level,
+			restrictions
+		});
+
+		console.log('Attempting to save user:', newUser);
 		await newUser.save();
 
 		res.status(201).json({ message: 'User created successfully', userId: newUser._id });
 	} catch (err) {
 		console.error('Error creating user:', err);
-		res.status(500).json({ message: 'Server error' });
+		res.status(500).json({
+			message: 'Server error',
+			error: err.message,
+			stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+		});
 	}
 };
 
