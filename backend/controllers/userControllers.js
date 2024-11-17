@@ -21,7 +21,9 @@ const userLogin = async (req, res) => {
 	const { email, password } = req.body;
 
 	if (!email || !password) {
-		return res.status(400).json({ message: 'Email and password are required' });
+		return res
+			.status(400)
+			.json({ message: 'Email and password are required' });
 	}
 
 	try {
@@ -35,7 +37,9 @@ const userLogin = async (req, res) => {
 			return res.status(401).json({ message: 'Invalid credentials' });
 		}
 
-		const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+		const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+			expiresIn: '1d',
+		});
 
 		user.lastLogin = new Date();
 		await user.save();
@@ -56,48 +60,42 @@ const userLogin = async (req, res) => {
 	}
 };
 
-
-
 // @desc Create a new user
-// @route POST /api/users
+
 
 const createUser = async (req, res) => {
-	console.log('Received request body:', req.body);
-	const {
-		name, email, password, age, height, weight,
-		exercise_hours, Activity_level, restrictions
-	} = req.body;
+	const { name, email, password } = req.body;
 
-	if (!name || !email || !password || !age || !height || !weight ||
-		!exercise_hours || !Activity_level || !restrictions) {
-		return res.status(400).json({ message: 'All fields are required' });
+	// Validate required fields
+	if (!name || !email || !password) {
+		return res
+			.status(400)
+			.json({ message: 'Name, email, and password are required' });
+
 	}
 
 	try {
+		// Check if the email is already in use
 		const existingUser = await User.findOne({ email });
 		if (existingUser) {
 			return res.status(400).json({ message: 'Email already in use' });
 		}
 
+		// Hash the password
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(password, salt);
 
-		const newUser = new User({
-			name,
-			email,
-			password: hashedPassword,
-			age,
-			height,
-			weight,
-			exercise_hours,
-			Activity_level,
-			restrictions
-		});
 
-		console.log('Attempting to save user:', newUser);
+		// Create a new user
+		const newUser = new User({ name, email, password: hashedPassword });
+
 		await newUser.save();
 
-		res.status(201).json({ message: 'User created successfully', userId: newUser._id });
+		// Respond with success
+		res.status(201).json({
+			message: 'User created successfully',
+			userId: newUser._id,
+		});
 	} catch (err) {
 		console.error('Error creating user:', err);
 		res.status(500).json({
@@ -107,6 +105,5 @@ const createUser = async (req, res) => {
 		});
 	}
 };
-
 
 module.exports = { getUsers, createUser, userLogin };
