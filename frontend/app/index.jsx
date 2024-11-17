@@ -38,7 +38,7 @@ const App = () => {
 
 		try {
 			const response = await axios.post(
-				'http://localhost:5000/api/users/',
+				'http://localhost:5000/api/users',
 				{
 					name,
 					email,
