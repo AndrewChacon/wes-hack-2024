@@ -8,7 +8,7 @@ genai.configure(api_key="google_api_key")
 
 # Define a Custom LangChain Wrapper for Gemini
 class GoogleGeminiLLM(LLM):
-    model_name: str = "gemini-1.5-flash"  # Replace with your Gemini model
+    model_name: str = "gemini-1.5-flash"
 
     @property
     def _llm_type(self):
