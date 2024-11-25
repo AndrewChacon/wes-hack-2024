@@ -4,7 +4,7 @@ from langchain import PromptTemplate, LLMChain
 import google.generativeai as genai
 
 # Configure the API key for Google Gemini
-genai.configure(api_key="AIzaSyBLoCJxr9RlOxZiNtkHMYn7Dj0lirGtfPI")
+genai.configure(api_key="google_api_key")
 
 # Define a Custom LangChain Wrapper for Gemini
 class GoogleGeminiLLM(LLM):
@@ -24,7 +24,7 @@ class GoogleGeminiLLM(LLM):
 def fetch_and_clean_data():
     """Fetch the most recent user document from MongoDB and clean it."""
     # MongoDB URI
-    MONGO_URI = "mongodb+srv://andrewbchacon:5w3CHfAgaAAHN6FV@cluster0.ba6vo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    MONGO_URI = "mongo_url"
 
     # Connect to the MongoDB client
     client = MongoClient(MONGO_URI)
